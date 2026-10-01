@@ -2,6 +2,10 @@ name: Build NetToggle macOS app
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'macOS/**'
 
 permissions:
   contents: write
