@@ -1,4 +1,5 @@
 name: Bootstrap NetToggle macOS release
+# transfer integrity retry
 
 on:
   push:
