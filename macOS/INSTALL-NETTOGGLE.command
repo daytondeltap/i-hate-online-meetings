@@ -61,6 +61,9 @@ echo "App: $APP"
 echo "DMG: $DMG"
 echo "SHA256: $HASH"
 echo
+if [[ "${NETTOGGLE_BUILD_ONLY:-0}" == "1" ]]; then
+  exit 0
+fi
 echo "Installing to /Applications..."
 DEST="/Applications/NetToggle.app"
 if [[ -w /Applications ]]; then
