@@ -3,12 +3,18 @@ name: Build NetToggle macOS app
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
       - 'macOS/**'
+      - '.github/workflows/build.yml'
 
 permissions:
   contents: write
+
+concurrency:
+  group: nettoggle-macos-release
+  cancel-in-progress: true
 
 jobs:
   macos:
@@ -20,40 +26,42 @@ jobs:
       - name: Build native app and DMG
         shell: bash
         run: |
+          set -euo pipefail
           chmod +x macOS/INSTALL-NETTOGGLE.command
           NETTOGGLE_BUILD_ONLY=1 ./macOS/INSTALL-NETTOGGLE.command
 
-      - name: Verify app and package
+      - name: Verify and package
         shell: bash
         run: |
+          set -euo pipefail
           test -x macOS/dist/NetToggle.app/Contents/MacOS/NetToggle
-          /usr/bin/codesign --verify --deep --strict macOS/dist/NetToggle.app
+          /usr/bin/codesign --verify --deep --strict --verbose=2 macOS/dist/NetToggle.app
           test -f macOS/dist/NetToggle-1.3-macOS.dmg
-          /usr/bin/ditto -c -k --keepParent macOS/dist/NetToggle.app NetToggle-1.3-macOS-app.zip
-          /usr/bin/shasum -a 256 NetToggle-1.3-macOS-app.zip macOS/dist/NetToggle-1.3-macOS.dmg > SHA256SUMS.txt
 
-      - name: Upload app artifact
+          /usr/bin/ditto -c -k --keepParent             macOS/dist/NetToggle.app             macOS/dist/NetToggle-1.3-macOS-app.zip
+
+          /usr/bin/shasum -a 256             macOS/dist/NetToggle-1.3-macOS-app.zip             macOS/dist/NetToggle-1.3-macOS.dmg             > macOS/dist/SHA256SUMS.txt
+
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: NetToggle-1.3-macOS-app
-          path: NetToggle-1.3-macOS-app.zip
+          name: NetToggle-1.3-macOS
+          path: |
+            macOS/dist/NetToggle-1.3-macOS-app.zip
+            macOS/dist/NetToggle-1.3-macOS.dmg
+            macOS/dist/SHA256SUMS.txt
 
-      - name: Upload DMG artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: NetToggle-1.3-macOS-dmg
-          path: macOS/dist/NetToggle-1.3-macOS.dmg
-
-      - name: Publish GitHub Release
+      - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          TAG="v1.3-build-${GITHUB_RUN_ID}"
-          gh release create "$TAG" \
-            NetToggle-1.3-macOS-app.zip \
-            macOS/dist/NetToggle-1.3-macOS.dmg \
-            SHA256SUMS.txt \
-            --target "$GITHUB_SHA" \
-            --title "NetToggle 1.3 for macOS" \
-            --notes "Ready-to-install macOS build. Download the DMG, open it, and drag NetToggle.app to Applications. This build is ad-hoc signed rather than Apple-notarized, so first launch may require Control-click/Right-click > Open. NetToggle requests administrator permission at launch for its local network controls."
+          set -euo pipefail
+          TAG="v1.3"
+          NOTES=$'Native NetToggle 1.3 macOS build.\n\nRecommended install: download NetToggle-1.3-macOS.dmg, open it, then drag NetToggle.app into Applications.\n\nThe app is ad-hoc signed rather than Apple-notarized, so macOS may require Control-click/Right-click > Open the first time.'
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG"               macOS/dist/NetToggle-1.3-macOS-app.zip               macOS/dist/NetToggle-1.3-macOS.dmg               macOS/dist/SHA256SUMS.txt               --clobber
+          else
+            gh release create "$TAG"               macOS/dist/NetToggle-1.3-macOS-app.zip               macOS/dist/NetToggle-1.3-macOS.dmg               macOS/dist/SHA256SUMS.txt               --target "$GITHUB_SHA"               --title "NetToggle 1.3 for macOS"               --notes "$NOTES"
+          fi
