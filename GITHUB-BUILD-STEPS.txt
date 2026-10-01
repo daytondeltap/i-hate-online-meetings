@@ -1,17 +1,3 @@
-NetToggle macOS — easiest install
-=================================
-
-Normal users do NOT need Xcode, Swift, Terminal, or build commands.
-
-Install a published build:
-1. Open this repository's Releases page.
-2. Open the newest "NetToggle 1.3 for macOS" release.
-3. Download NetToggle-1.3-macOS.dmg.
-4. Open the DMG and drag NetToggle.app to Applications.
-5. Because this build is ad-hoc signed rather than Apple-notarized, first launch may require Control-click/Right-click NetToggle > Open.
-
-Maintainer rebuild:
-1. Open Actions.
-2. Choose "Build NetToggle macOS app".
-3. Click Run workflow.
-4. A successful run publishes a new GitHub Release automatically and also keeps downloadable workflow artifacts.
+The Build and release ihatemeetings workflow compiles Windows x64 and universal
+macOS binaries, validates them and publishes all artifacts to v1.4.0.
+Users should download the compiled EXE or DMG from Releases; no build needed.

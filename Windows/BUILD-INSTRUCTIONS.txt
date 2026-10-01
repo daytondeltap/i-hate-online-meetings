@@ -1,0 +1,12 @@
+ihatemeetings.exe is already compiled. Run it directly for normal use.
+
+Optional rebuild:
+Run COMPILE-WINDOWS.cmd with a Windows MinGW-w64 toolchain installed.
+source/Build-ihatemeetings.ps1 also contains the inherited MSVC build route; the
+included release was tested with MinGW-w64, not MSVC.
+
+Cloud build:
+Upload this package's Windows and .github directories to a GitHub repository.
+Run the "Build ihatemeetings 1.4 Windows" Actions workflow. It builds with MinGW,
+runs the timing tests, and uploads ihatemeetings.exe and documentation.
+This workflow is included but was not submitted/executed in this environment.

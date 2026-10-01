@@ -1,6 +1,0 @@
-Repository transfer checks
-===========================
-85f256b27ecfaa3ef0d44ffc5e45ddd860cd314fb514b44c095e4902f2d1ba7f  source/main.swift (original uploaded source)
-
-The custom PNG icon was omitted from the final repository build because it is optional to compilation.
-Release artifact hashes are generated fresh by GitHub Actions into SHA256SUMS.txt.

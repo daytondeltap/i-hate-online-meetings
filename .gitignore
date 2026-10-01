@@ -1,0 +1,4 @@
+macOS/dist/
+Windows/*.exe
+Windows/source/*.res
+Windows/source/*.exe

@@ -1,0 +1,26 @@
+IHATEMEETINGS 1.4 VALIDATION - 2026-10-01
+
+PASSED IN BUILD ENVIRONMENT
+- Windows x64 cross-build with MinGW GCC, C++17, optimization and static C++ runtime.
+- Compiler warnings enabled: -Wall -Wextra -Wpedantic -Werror; clean build.
+- 25 portable timing tests with AddressSanitizer and UndefinedBehaviorSanitizer.
+  Covers automatic/manual operation, counts, cancellation, failed transitions,
+  random range bounds, independent phase sampling, equal bounds and time limits.
+  Leak sanitizer was disabled because this sandbox does not support its process checks.
+- PE32+ x64 Windows GUI binary; imports only Windows system DLLs.
+- Embedded 1.4 title and administrator manifest verified; icon and version resource
+  compiled from supplied app.ico and updated app.rc.
+- Source review of browser/app AND remote-range conditions, IPv4/IPv6 family
+  selection, transaction aborts, filter read-back and cleanup paths.
+
+NOT EXECUTED HERE
+- Native Windows UI, hotkey, adapter disable/enable or WFP integration tests.
+- Actual Zoom or Google Meet call interruption, recovery, proxy/VPN behavior,
+  browser process identification under all configurations, or precise timing.
+- MSVC build helper and optional GitHub Actions workflow.
+
+The Test button performs API/filter checks on Windows. It does not measure live
+packet loss. A successful build and portable tests do not establish production
+readiness on a real Windows network. Validate in a test call before relying on it.
+The executable is unsigned. Meet mode blocks known media destinations and does
+not guarantee a service-side disconnect/kick.
