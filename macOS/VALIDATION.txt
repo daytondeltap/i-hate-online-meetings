@@ -1,0 +1,16 @@
+NetToggle 1.3 macOS validation
+=============================
+
+Validation completed for the uploaded source:
+- PASS: source/main.swift passes Swift 6.2 parser validation in the source package.
+- PASS: Zoom filtering is generated from active Zoom TCP/UDP connection tuples (protocol + local/remote address + port), rather than broad remote-IP-only rules.
+- PASS: Zoom Kick refreshes active Zoom connection tuples while running.
+- PASS: PF rule loading is followed by anchor read-back verification.
+- PASS: PF-backed modes include a parent-death cleanup guard that clears the NetToggle anchor and releases NetToggle's pf enable token when available.
+- PASS: Adapter mode includes a separate parent-death guard that attempts to restore the selected interface to UP.
+- PASS: normal Stop/restore paths clear temporary PF rules and restore an interface disabled by NetToggle.
+
+Release build:
+- GitHub Actions builds on a native macOS 14 runner.
+- The release workflow verifies the app signature and DMG before publishing.
+- Release assets include the app ZIP, DMG, and SHA256SUMS.txt.
