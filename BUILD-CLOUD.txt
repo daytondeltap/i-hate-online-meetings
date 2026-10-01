@@ -1,0 +1,15 @@
+No-local-toolchain build
+========================
+
+This repository is configured so GitHub builds NetToggle on a native macOS 14 runner.
+No local compiler commands are required.
+
+For users:
+- Download the latest DMG from Releases and drag NetToggle.app to Applications.
+
+For maintainers:
+- Actions > Build NetToggle macOS app > Run workflow.
+- Successful builds publish a GitHub Release containing:
+  - NetToggle-1.3-macOS.dmg
+  - NetToggle-1.3-macOS-app.zip
+  - SHA256SUMS.txt
