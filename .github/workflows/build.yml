@@ -24,7 +24,7 @@ jobs:
         run: bash macOS/build.sh
       - name: Verify bundle and disk image
         run: |
-          lipo -verify_arch arm64 x86_64 macOS/dist/ihatemeetings.app/Contents/MacOS/ihatemeetings
+          lipo macOS/dist/ihatemeetings.app/Contents/MacOS/ihatemeetings -verify_arch arm64 x86_64
           codesign --verify --deep --strict macOS/dist/ihatemeetings.app
           hdiutil verify macOS/dist/ihatemeetings-1.4-macOS-universal.dmg
       - uses: actions/upload-artifact@v4
