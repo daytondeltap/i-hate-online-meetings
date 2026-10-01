@@ -1,5 +1,5 @@
 name: Bootstrap NetToggle macOS release
-# transfer integrity retry
+# source-only bootstrap retry
 
 on:
   push:
@@ -29,10 +29,9 @@ jobs:
               Path(output).write_bytes(data)
 
           restore([".bootstrap/main0.b64", ".bootstrap/main1.b64"], "macOS/source/main.swift")
-          restore([".bootstrap/icon0.b64", ".bootstrap/icon1.b64"], "macOS/resources/AppIcon.png")
+          # App icon is optional for the native build; skip binary transfer during bootstrap.
           PY
           test "$(shasum -a 256 macOS/source/main.swift | awk '{print $1}')" = "85f256b27ecfaa3ef0d44ffc5e45ddd860cd314fb514b44c095e4902f2d1ba7f"
-          test "$(shasum -a 256 macOS/resources/AppIcon.png | awk '{print $1}')" = "94ef1d2639daca659fc10d319517c1d53a37b199046c41529d3e03d6c762b78e"
 
       - name: Build native app and DMG
         shell: bash
@@ -55,7 +54,7 @@ jobs:
           rm -rf .bootstrap
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add macOS/source/main.swift macOS/resources/AppIcon.png
+          git add macOS/source/main.swift
           git add -u .bootstrap
           git commit -m "Restore NetToggle macOS source from uploaded package"
           git push origin HEAD:main
