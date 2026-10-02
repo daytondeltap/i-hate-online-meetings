@@ -2,3 +2,6 @@ macOS/dist/
 Windows/*.exe
 Windows/source/*.res
 Windows/source/*.exe
+Windows/source/advanced_main_layout.cpp
+Windows/source/windows-*.bmp
+mac-*.png

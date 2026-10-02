@@ -1,11 +1,11 @@
-ihatemeetings 1.5.2 — macOS 12 or newer, Intel and Apple Silicon
+ihatemeetings 1.5.3 — macOS 12 or newer, Intel and Apple Silicon
 
 INSTALL
 Download the universal DMG from Releases, open it, and drag ihatemeetings.app
 to Applications. Launch the app and approve its administrator prompt.
 
 UI SPACING
-Version 1.5.2 expands and reflows the main window and Advanced editor so controls
+Version 1.5.3 expands and reflows the main window and Advanced editor so controls
 have larger horizontal and vertical gaps. The build pipeline validates the known
 layout geometry before compiling the universal app.
 
@@ -41,5 +41,5 @@ not verify live call packet loss.
 DEVELOPERS
 bash macOS/build.sh from repo root (requires Apple developer tools).
 source/main_advanced.swift contains the native UI/networking implementation;
-source/prepare_layout.pl generates the expanded 1.5.2 build layout.
+source/prepare_layout.pl generates the expanded 1.5.3 build layout.
 source/Timing.swift contains timing and Meet range helpers.

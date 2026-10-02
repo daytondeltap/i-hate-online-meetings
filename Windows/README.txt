@@ -1,11 +1,11 @@
-IHATEMEETINGS 1.5.2 - WINDOWS 10/11 x64
+IHATEMEETINGS 1.5.3 - WINDOWS 10/11 x64
 
 RUN
 Open ihatemeetings.exe and accept the administrator prompt. No compiler, Python,
 Electron, .NET download, or separate runtime installation is required.
 
 UI SPACING
-Version 1.5.2 expands the main window and Advanced editor and increases spacing
+Version 1.5.3 expands the main window and Advanced editor and increases spacing
 between the existing controls to prevent the overlap/clipping reported in 1.5.0.
 The release build also runs automated checks for the known layout gaps before
 compilation.

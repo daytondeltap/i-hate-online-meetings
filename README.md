@@ -6,8 +6,8 @@
 
 | Your computer | Download | How to install |
 | --- | --- | --- |
-| **Windows PC** | [**Download for Windows (.exe)**](https://github.com/daytondeltap/i-hate-online-meetings/releases/download/v1.5.2/01-Windows-ihatemeetings.exe) | Open the downloaded file and accept the administrator prompt. |
-| **Mac — Apple Silicon or Intel** | [**Download for Mac (.dmg)**](https://github.com/daytondeltap/i-hate-online-meetings/releases/download/v1.5.2/02-Mac-ihatemeetings.dmg) | Open the disk image, then drag **ihatemeetings** into **Applications**. |
+| **Windows PC** | [**Download for Windows (.exe)**](https://github.com/daytondeltap/i-hate-online-meetings/releases/download/v1.5.3/01-Windows-ihatemeetings.exe) | Open the downloaded file and accept the administrator prompt. |
+| **Mac — Apple Silicon or Intel** | [**Download for Mac (.dmg)**](https://github.com/daytondeltap/i-hate-online-meetings/releases/download/v1.5.3/02-Mac-ihatemeetings.dmg) | Open the disk image, then drag **ihatemeetings** into **Applications**. |
 
 ## Features
 
@@ -37,4 +37,6 @@ Mac: if it blocks it: System Settings → Privacy & Security → Open Anyway, yo
 
 This allows you to add fake lag to any type of app, but mainly meetings, mainly supports google meet and zoom. Make sure to choose the correct network adapter at the top of the app window, if already installed.
 
-Version 1.5.2 fixes Mac state cleanup to target complete connections and excludes ambiguous shared UDP bindings. The inspector shows connection metadata; it does not capture or decrypt individual packet payloads. Mac application scoping is best-effort socket ownership, not kernel-enforced process isolation.
+Version 1.5.3 fixes Mac state cleanup to target complete connections and excludes ambiguous shared UDP bindings. The inspector shows connection metadata; it does not capture or decrypt individual packet payloads. Mac application scoping is best-effort socket ownership, not kernel-enforced process isolation.
+
+**1.5.3 UI polish:** unchanged main-window dimensions, wider configuration windows, corrected label spacing and native control/font regression checks.

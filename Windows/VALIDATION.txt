@@ -1,8 +1,12 @@
-IHATEMEETINGS 1.5.2 VALIDATION
+IHATEMEETINGS 1.5.3 VALIDATION
 
 Release CI gates: Windows warnings-as-errors build, 25 cycle/timing cases,
 Windows and Mac layout checks, Mac timing and app-isolation parser tests,
 PF rule syntax check, universal Mac build, signature and DMG verification.
+
+Native UI tests measure real control rectangles and font extents and render previews.
+Windows WFP tests install, read back and remove scoped IPv4/IPv6 TCP/UDP filters
+for the test executable and reserved documentation addresses.
 
 New regression cases cover separate apps connecting to the same server,
 shared UDP ports, exact PF state IDs, ambiguous/NAT states, IPv6 endpoints,

@@ -6,7 +6,7 @@ APP="$DIST/ihatemeetings.app"
 mkdir -p "$DIST"
 
 # Build from a generated source copy so the checked-in compact implementation can
-# keep its behavior while the release layout receives the expanded 1.5.2 geometry.
+# keep its behavior while the release layout receives the expanded 1.5.3 geometry.
 BUILD_SOURCE="$DIST/AdvancedMain.swift"
 perl source/prepare_layout.pl source/main_advanced.swift > "$BUILD_SOURCE"
 
@@ -30,8 +30,8 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
 <key>CFBundleIdentifier</key><string>local.ihatemeetings.app</string>
 <key>CFBundleName</key><string>ihatemeetings</string>
 <key>CFBundleDisplayName</key><string>ihatemeetings</string>
-<key>CFBundleShortVersionString</key><string>1.5.2</string>
-<key>CFBundleVersion</key><string>1.5.2</string>
+<key>CFBundleShortVersionString</key><string>1.5.3</string>
+<key>CFBundleVersion</key><string>1.5.3</string>
 <key>CFBundlePackageType</key><string>APPL</string>
 <key>NSHighResolutionCapable</key><true/>
 <key>LSMinimumSystemVersion</key><string>12.0</string>
@@ -53,6 +53,6 @@ trap 'rm -rf "$STAGE"' EXIT
 cp -R "$APP" "$STAGE/"
 cp README.txt "$STAGE/READ-ME.txt"
 ln -s /Applications "$STAGE/Applications"
-hdiutil create -volname "ihatemeetings 1.5.2" -srcfolder "$STAGE" -ov -format UDZO "$DIST/ihatemeetings-1.5.2-macOS-universal.dmg"
-hdiutil verify "$DIST/ihatemeetings-1.5.2-macOS-universal.dmg"
-ditto -c -k --keepParent "$APP" "$DIST/ihatemeetings-1.5.2-macOS-app.zip"
+hdiutil create -volname "ihatemeetings 1.5.3" -srcfolder "$STAGE" -ov -format UDZO "$DIST/ihatemeetings-1.5.3-macOS-universal.dmg"
+hdiutil verify "$DIST/ihatemeetings-1.5.3-macOS-universal.dmg"
+ditto -c -k --keepParent "$APP" "$DIST/ihatemeetings-1.5.3-macOS-app.zip"
