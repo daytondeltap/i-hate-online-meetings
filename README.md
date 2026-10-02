@@ -6,8 +6,8 @@
 
 | Your computer | Download | How to install |
 | --- | --- | --- |
-| **Windows PC** | [**Download for Windows (.exe)**](https://github.com/daytondeltap/i-hate-online-meetings/releases/download/v1.5.0/01-Windows-ihatemeetings.exe) | Open the downloaded file and accept the administrator prompt. |
-| **Mac — Apple Silicon or Intel** | [**Download for Mac (.dmg)**](https://github.com/daytondeltap/i-hate-online-meetings/releases/download/v1.5.0/02-Mac-ihatemeetings.dmg) | Open the disk image, then drag **ihatemeetings** into **Applications**. |
+| **Windows PC** | [**Download for Windows (.exe)**](https://github.com/daytondeltap/i-hate-online-meetings/releases/download/v1.5.1/01-Windows-ihatemeetings.exe) | Open the downloaded file and accept the administrator prompt. |
+| **Mac — Apple Silicon or Intel** | [**Download for Mac (.dmg)**](https://github.com/daytondeltap/i-hate-online-meetings/releases/download/v1.5.1/02-Mac-ihatemeetings.dmg) | Open the disk image, then drag **ihatemeetings** into **Applications**. |
 
 ## Features
 
@@ -20,6 +20,7 @@ I lit made this for one person lmao
 - Each preset can match application, TCP/UDP, direction, local port, remote IP/CIDR and remote port.
 - **Identify app traffic** shows active TCP/UDP connection/socket metadata owned by the selected app and can load a connection into the current preset.
 - Advanced filters use the same timing, random ranges, cycles and hotkey controls as the normal modes.
+- **1.5.1 UI spacing patch:** larger Windows/macOS windows and Advanced editors with extra room between controls; CI now checks the known layout gaps on every build.
 
 Windows enforces the executable identity directly in Windows Filtering Platform rules. macOS discovers connections owned by the selected executable and creates exact connection rules for those endpoints. Encrypted payload contents are not decrypted or inspected.
 

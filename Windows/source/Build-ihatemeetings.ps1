@@ -10,6 +10,7 @@ $src = Split-Path -Parent $MyInvocation.MyCommand.Path
 $root = Split-Path -Parent $src
 $out = Join-Path $root 'ihatemeetings.exe'
 $resObj = Join-Path $src 'app.res'
+$layoutSource = Join-Path $src 'advanced_main_layout.cpp'
 
 function Find-Command([string]$Name) {
     $c = Get-Command $Name -ErrorAction SilentlyContinue
@@ -21,7 +22,9 @@ function Invoke-Checked([string]$Exe, [string[]]$Args) {
     & $Exe @Args
     if ($LASTEXITCODE -ne 0) { throw "$Exe failed with exit code $LASTEXITCODE" }
 }
-if ($Clean) { Remove-Item $out,$resObj -Force -ErrorAction SilentlyContinue }
+if ($Clean) { Remove-Item $out,$resObj,$layoutSource -Force -ErrorAction SilentlyContinue }
+
+& (Join-Path $src 'Prepare-Layout.ps1') -OutputPath $layoutSource
 
 $mingwGpp = Find-Command 'g++'; $mingwWindres = Find-Command 'windres'
 if ($mingwGpp -and $mingwWindres) {
@@ -35,7 +38,7 @@ if ($useMinGW) {
     Push-Location $src
     try {
         Invoke-Checked $mingwWindres @('-I','.', 'app.rc','-O','coff','-o',$resObj)
-        Invoke-Checked $mingwGpp @('-std=c++17','-O2','-Wall','-Wextra','-Wpedantic','-Werror','-static','-static-libgcc','-static-libstdc++','-municode','-mwindows','advanced_main.cpp',$resObj,'-o',$out,'-liphlpapi','-lsetupapi','-lcfgmgr32','-lfwpuclnt','-lrpcrt4','-lcomctl32','-lcomdlg32','-lshell32','-lole32','-luuid','-lws2_32','-lwinmm')
+        Invoke-Checked $mingwGpp @('-std=c++17','-O2','-Wall','-Wextra','-Wpedantic','-Werror','-static','-static-libgcc','-static-libstdc++','-municode','-mwindows','advanced_main_layout.cpp',$resObj,'-o',$out,'-liphlpapi','-lsetupapi','-lcfgmgr32','-lfwpuclnt','-lrpcrt4','-lcomctl32','-lcomdlg32','-lshell32','-lole32','-luuid','-lws2_32','-lwinmm')
     } finally { Pop-Location }
 } else {
     $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
@@ -49,7 +52,7 @@ if ($useMinGW) {
 call "$devCmd" -arch=x64 -host_arch=x64 >nul || exit /b 1
 cd /d "$src"
 rc /nologo /fo app.res app.rc || exit /b 1
-cl /nologo /std:c++17 /O2 /W4 /WX /EHsc /MT advanced_main.cpp app.res /Fe:"$out" /link /SUBSYSTEM:WINDOWS /ENTRY:wWinMainCRTStartup $libs || exit /b 1
+cl /nologo /std:c++17 /O2 /W4 /WX /EHsc /MT advanced_main_layout.cpp app.res /Fe:"$out" /link /SUBSYSTEM:WINDOWS /ENTRY:wWinMainCRTStartup $libs || exit /b 1
 "@ | Set-Content -LiteralPath $tmp -Encoding ASCII
     try { & cmd.exe /d /c $tmp; if ($LASTEXITCODE -ne 0) { throw "MSVC build failed with exit code $LASTEXITCODE" } }
     finally { Remove-Item $tmp -Force -ErrorAction SilentlyContinue }

@@ -14,26 +14,28 @@ jobs:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
-      - name: Test timing and validate PF rule syntax
+      - name: Test timing, PF syntax and expanded UI layout
         run: |
           swiftc -swift-version 5 macOS/source/Timing.swift macOS/tests/main.swift -o /tmp/test-timing
           /tmp/test-timing
           /tmp/test-timing --rules > /tmp/meet-rules.conf
           sudo /sbin/pfctl -n -a com.apple/ihatemeetings-test -f /tmp/meet-rules.conf
-          swiftc -frontend -parse macOS/source/main_advanced.swift
+          bash macOS/build.sh --prepare-only
+          python3 macOS/tests/test_layout.py
+          swiftc -frontend -parse macOS/dist/AdvancedMain.swift
       - name: Build universal app and DMG
         run: bash macOS/build.sh
       - name: Verify bundle and disk image
         run: |
           lipo macOS/dist/ihatemeetings.app/Contents/MacOS/ihatemeetings -verify_arch arm64 x86_64
           codesign --verify --deep --strict macOS/dist/ihatemeetings.app
-          hdiutil verify macOS/dist/ihatemeetings-1.5-macOS-universal.dmg
+          hdiutil verify macOS/dist/ihatemeetings-1.5.1-macOS-universal.dmg
       - uses: actions/upload-artifact@v4
         with:
           name: macos-release
           path: |
-            macOS/dist/ihatemeetings-1.5-macOS-universal.dmg
-            macOS/dist/ihatemeetings-1.5-macOS-app.zip
+            macOS/dist/ihatemeetings-1.5.1-macOS-universal.dmg
+            macOS/dist/ihatemeetings-1.5.1-macOS-app.zip
   windows:
     runs-on: windows-latest
     steps:
@@ -43,6 +45,11 @@ jobs:
           msystem: UCRT64
           update: true
           install: mingw-w64-ucrt-x86_64-gcc
+      - name: Prepare and validate expanded UI layout
+        shell: pwsh
+        run: |
+          & Windows/source/Prepare-Layout.ps1
+          python Windows/tests/test_layout.py
       - name: Test and compile
         shell: msys2 {0}
         run: |
@@ -51,7 +58,7 @@ jobs:
           g++ -std=c++17 -Wall -Wextra -Werror test_cycle.cpp -o test-cycle.exe
           ./test-cycle.exe
           windres -I . app.rc -O coff -o app.res
-          g++ -std=c++17 -O2 -Wall -Wextra -Wpedantic -Werror -static -static-libgcc -static-libstdc++ -municode -mwindows advanced_main.cpp app.res -o ../ihatemeetings.exe -liphlpapi -lsetupapi -lcfgmgr32 -lfwpuclnt -lrpcrt4 -lcomctl32 -lcomdlg32 -lshell32 -lole32 -luuid -lws2_32 -lwinmm
+          g++ -std=c++17 -O2 -Wall -Wextra -Wpedantic -Werror -static -static-libgcc -static-libstdc++ -municode -mwindows advanced_main_layout.cpp app.res -o ../ihatemeetings.exe -liphlpapi -lsetupapi -lcfgmgr32 -lfwpuclnt -lrpcrt4 -lcomctl32 -lcomdlg32 -lshell32 -lole32 -luuid -lws2_32 -lwinmm
           strip ../ihatemeetings.exe
       - uses: actions/upload-artifact@v4
         with:
@@ -71,9 +78,9 @@ jobs:
       - name: Package sources and checksums
         run: |
           set -euo pipefail
-          git archive --format=zip --output=release-assets/ihatemeetings-1.5-Windows-source.zip HEAD Windows
-          git archive --format=zip --output=release-assets/ihatemeetings-1.5-macOS-source.zip HEAD macOS
-          git archive --format=zip --output=release-assets/ihatemeetings-1.5-all-source.zip HEAD
+          git archive --format=zip --output=release-assets/ihatemeetings-1.5.1-Windows-source.zip HEAD Windows
+          git archive --format=zip --output=release-assets/ihatemeetings-1.5.1-macOS-source.zip HEAD macOS
+          git archive --format=zip --output=release-assets/ihatemeetings-1.5.1-all-source.zip HEAD
           cd release-assets
           sha256sum *.zip *.exe *.dmg > SHA256SUMS.txt
       - name: Publish release
@@ -81,9 +88,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          TAG=v1.5.0
+          TAG=v1.5.1
           if gh release view "$TAG" >/dev/null 2>&1; then
             echo 'Release already exists; refusing to replace published artifacts.' >&2
             exit 1
           fi
-          gh release create "$TAG" release-assets/* --target "$GITHUB_SHA" --title "ihatemeetings 1.5 — Windows and macOS" --notes-file RELEASE-NOTES.md --latest
+          gh release create "$TAG" release-assets/* --target "$GITHUB_SHA" --title "ihatemeetings 1.5.1 — Windows and macOS" --notes-file RELEASE-NOTES.md --latest
