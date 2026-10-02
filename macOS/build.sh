@@ -4,8 +4,16 @@ cd "$(dirname "$0")"
 DIST="$PWD/dist"
 APP="$DIST/ihatemeetings.app"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
+
+# Keep the compact checked-in source readable by the Swift parser while giving the
+# normal compiler unambiguous operator spacing. Naming the generated entry file
+# main.swift also permits its top-level AppKit entry point when Timing.swift is
+# compiled in the same module.
+BUILD_SOURCE="$DIST/main.swift"
+perl -pe 's/==\./== ./g; s/&&!/&& !/g; s/\|\|!/|| !/g; s/!=/ != /g' source/main_advanced.swift > "$BUILD_SOURCE"
+
 for arch in arm64 x86_64; do
-  xcrun swiftc -swift-version 5 -O -whole-module-optimization -target "${arch}-apple-macos12.0" -framework AppKit -framework Carbon -framework Foundation source/main_advanced.swift source/Timing.swift -o "$DIST/ihatemeetings-$arch"
+  xcrun swiftc -swift-version 5 -O -whole-module-optimization -target "${arch}-apple-macos12.0" -framework AppKit -framework Carbon -framework Foundation "$BUILD_SOURCE" source/Timing.swift -o "$DIST/ihatemeetings-$arch"
 done
 lipo -create "$DIST/ihatemeetings-arm64" "$DIST/ihatemeetings-x86_64" -output "$APP/Contents/MacOS/ihatemeetings"
 cat > "$APP/Contents/Info.plist" <<'PLIST'
