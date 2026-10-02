@@ -1,13 +1,15 @@
-1.4 (based on the user's uploaded 1.3 Windows buildable package)
+1.5
+- Added Advanced mode checkbox at the top of the native Windows and macOS UIs.
+- Added five persistent app-specific packet/flow presets.
+- Presets support application, protocol, direction, local port, remote IP/CIDR
+  and remote port matching.
+- Added app traffic inspection and loading an observed connection into a preset.
+- Advanced mode reuses existing timing, random ranges, cycles and hotkeys.
+- Windows enforces executable identity directly with WFP application conditions.
+- macOS derives exact PF connection rules from sockets owned by the selected app.
+- Updated release/build artifacts to 1.5 and the renamed repository URL.
+
+1.4
 - Meet Lag and Meet Disconnect profiles with browser identity + Meet media CIDRs.
-- IPv4/IPv6 Workspace and consumer media ranges from Google's current guide.
-- Inclusive, independent randomized OFF/ON duration ranges; per-phase sampling.
-- Compact native UI, approximately 28% smaller client area.
-- Zoom/Meet share transaction and read-back handling; failed filter creation
-  cannot be overwritten by a subsequent application's success.
-- Reject partial application-ID discovery rather than silently skipping a target.
-- Keep WFP session handles available for retry if cleanup reports failure.
-- Exception cleanup and truthful cancellation/API-only test status.
-- Fixed compiler warnings in supplied 1.3 source; compiled Windows x64 EXE included.
-- Retained source, icon, legacy binary, local build helpers and cloud-build assets.
-- Cloud workflow targets Windows; this upload contains no macOS source.
+- IPv4/IPv6 Meet media ranges and randomized OFF/ON duration ranges.
+- Compact native UI; retained Zoom, adapter modes, restoration and tests.
