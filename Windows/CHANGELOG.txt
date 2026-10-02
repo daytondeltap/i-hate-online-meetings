@@ -1,3 +1,13 @@
+1.5.3
+- Kept the normal Windows and macOS main-window dimensions unchanged.
+- Made Advanced/configuration windows roomier and corrected label/control spacing.
+- Added native Windows and AppKit geometry/font checks plus rendered UI previews.
+- Added Windows WFP install/read-back/remove regression coverage for scoped filters.
+- Prevented switching into Advanced/configuration controls during an active normal run.
+- Prevented stale traffic-inspector results from being applied after changing apps.
+- Preset switching now validates before changing slots, and Advanced test results remain visible.
+- Tightened macOS app-owned connection/state matching and shared-UDP handling.
+
 1.5
 - Added Advanced mode checkbox at the top of the native Windows and macOS UIs.
 - Added five persistent app-specific packet/flow presets.
