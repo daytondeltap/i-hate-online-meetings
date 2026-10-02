@@ -5,7 +5,7 @@ DIST="$PWD/dist"
 APP="$DIST/ihatemeetings.app"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 for arch in arm64 x86_64; do
-  xcrun swiftc -swift-version 5 -O -whole-module-optimization -target "${arch}-apple-macos12.0" -framework AppKit -framework Carbon -framework Foundation source/main.swift source/Timing.swift -o "$DIST/ihatemeetings-$arch"
+  xcrun swiftc -swift-version 5 -O -whole-module-optimization -target "${arch}-apple-macos12.0" -framework AppKit -framework Carbon -framework Foundation source/main_advanced.swift source/Timing.swift -o "$DIST/ihatemeetings-$arch"
 done
 lipo -create "$DIST/ihatemeetings-arm64" "$DIST/ihatemeetings-x86_64" -output "$APP/Contents/MacOS/ihatemeetings"
 cat > "$APP/Contents/Info.plist" <<'PLIST'
@@ -16,8 +16,8 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
 <key>CFBundleIdentifier</key><string>local.ihatemeetings.app</string>
 <key>CFBundleName</key><string>ihatemeetings</string>
 <key>CFBundleDisplayName</key><string>ihatemeetings</string>
-<key>CFBundleShortVersionString</key><string>1.4</string>
-<key>CFBundleVersion</key><string>1.4.0</string>
+<key>CFBundleShortVersionString</key><string>1.5</string>
+<key>CFBundleVersion</key><string>1.5.0</string>
 <key>CFBundlePackageType</key><string>APPL</string>
 <key>NSHighResolutionCapable</key><true/>
 <key>LSMinimumSystemVersion</key><string>12.0</string>
@@ -38,6 +38,6 @@ trap 'rm -rf "$STAGE"' EXIT
 cp -R "$APP" "$STAGE/"
 cp README.txt "$STAGE/READ-ME.txt"
 ln -s /Applications "$STAGE/Applications"
-hdiutil create -volname "ihatemeetings 1.4" -srcfolder "$STAGE" -ov -format UDZO "$DIST/ihatemeetings-1.4-macOS-universal.dmg"
-hdiutil verify "$DIST/ihatemeetings-1.4-macOS-universal.dmg"
-ditto -c -k --keepParent "$APP" "$DIST/ihatemeetings-1.4-macOS-app.zip"
+hdiutil create -volname "ihatemeetings 1.5" -srcfolder "$STAGE" -ov -format UDZO "$DIST/ihatemeetings-1.5-macOS-universal.dmg"
+hdiutil verify "$DIST/ihatemeetings-1.5-macOS-universal.dmg"
+ditto -c -k --keepParent "$APP" "$DIST/ihatemeetings-1.5-macOS-app.zip"
