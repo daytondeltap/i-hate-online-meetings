@@ -5,9 +5,10 @@ Download the universal DMG from Releases, open it, and drag ihatemeetings.app
 to Applications. Launch the app and approve its administrator prompt.
 
 UI SPACING
-Version 1.5.3 expands and reflows the main window and Advanced editor so controls
-have larger horizontal and vertical gaps. The build pipeline validates the known
-layout geometry before compiling the universal app.
+Version 1.5.3 keeps the shipped main-window dimensions unchanged. The Advanced
+configuration window is roomier and its controls are re-spaced into consistent
+rows/columns so labels and fields do not overlap. The build pipeline measures
+native AppKit geometry/font extents and renders UI previews before publishing.
 
 ADVANCED MODE
 Check Advanced mode at the top, then choose Configure. Five persistent presets
@@ -41,5 +42,5 @@ not verify live call packet loss.
 DEVELOPERS
 bash macOS/build.sh from repo root (requires Apple developer tools).
 source/main_advanced.swift contains the native UI/networking implementation;
-source/prepare_layout.pl generates the expanded 1.5.3 build layout.
+source/prepare_layout.pl prepares the 1.5.3 build source.
 source/Timing.swift contains timing and Meet range helpers.
