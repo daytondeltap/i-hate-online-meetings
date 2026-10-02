@@ -1,5 +1,7 @@
 The Build and release ihatemeetings workflow compiles Windows x64 and universal
 macOS binaries, validates them and publishes the versioned release artifacts.
-Version 1.5.0 is published in Releases with the Windows EXE and universal Mac DMG
+Version 1.5.1 is published in Releases with the Windows EXE and universal Mac DMG
 listed first, followed by the alternate app ZIP, source archives and checksums.
-Users installing the app do not need to run a build command.
+The workflow also runs platform layout regression checks before compilation so
+known window/control spacing regressions fail the build. Users installing the app
+do not need to run a build command.

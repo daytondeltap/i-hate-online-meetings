@@ -1,25 +1,30 @@
-IHATEMEETINGS 1.5 VALIDATION - 2026-10-02
+IHATEMEETINGS 1.5.1 VALIDATION - 2026-10-02
 
 PASSED IN GITHUB ACTIONS
 - Windows x64 MinGW-w64 C++17 build completed successfully with optimization,
   static C++ runtime, and -Wall -Wextra -Wpedantic -Werror.
 - All 25 automatic/manual timing, randomized-range, cancellation and failure
   scenarios passed before the Windows application was compiled.
-- The 1.5 Windows build includes advanced_main.cpp, the base modes, the native
-  Advanced mode UI, five saved presets, app-owned traffic inspection and WFP
-  conditions for executable identity, protocol, direction, ports and remote
-  IPv4/IPv6 address/CIDR matching.
-- app.rc compiled with the 1.5 title/version resource and administrator manifest.
-- The Windows executable was uploaded as a build artifact and published in the
-  v1.5.0 release.
+- Windows UI layout regression checks passed before compilation. The generated
+  build source enforces the larger main dialog, larger Advanced editor, and
+  minimum horizontal/vertical spacing between known control groups.
+- The 1.5.1 Windows build includes Advanced mode, five saved presets, app-owned
+  traffic inspection and WFP conditions for executable identity, protocol,
+  direction, ports and remote IPv4/IPv6 address/CIDR matching.
+- app.rc compiled with the 1.5.1 title/version resource and administrator manifest.
+- macOS timing/PF syntax and expanded-layout checks passed, followed by successful
+  universal Intel/Apple Silicon compilation, signature verification and DMG verification.
+- The Windows executable and Mac DMG/app ZIP were published in the v1.5.1 release.
 
 NOT EXECUTED BY HOSTED CI
-- Interactive Windows UI/hotkey testing on a physical user desktop.
-- Runtime WFP install/remove behavior against a live third-party application.
+- Visual inspection on every physical Windows/macOS display, DPI, accessibility
+  text-size, or custom scaling configuration.
+- Interactive Windows/macOS UI and hotkey testing on a physical user desktop.
+- Runtime WFP/PF behavior against every live third-party application configuration.
 - Physical adapter disable/enable behavior on real Ethernet or Wi-Fi hardware.
 - Actual Zoom/Google Meet interruption behavior, VPN/proxy combinations, or
   application-specific traffic patterns on every supported environment.
 
 The in-app Test button performs the selected API/filter install-and-restore check
-on the machine where the app is running. The hosted build verifies compilation
-and portable tests; it does not claim that a particular live call will disconnect.
+on the machine where the app is running. Hosted CI verifies the known UI geometry,
+compilation and portable tests; it does not replace visual testing at every scale.
