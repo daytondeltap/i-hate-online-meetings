@@ -1,26 +1,25 @@
-IHATEMEETINGS 1.4 VALIDATION - 2026-10-01
+IHATEMEETINGS 1.5 VALIDATION - 2026-10-02
 
-PASSED IN BUILD ENVIRONMENT
-- Windows x64 cross-build with MinGW GCC, C++17, optimization and static C++ runtime.
-- Compiler warnings enabled: -Wall -Wextra -Wpedantic -Werror; clean build.
-- 25 portable timing tests with AddressSanitizer and UndefinedBehaviorSanitizer.
-  Covers automatic/manual operation, counts, cancellation, failed transitions,
-  random range bounds, independent phase sampling, equal bounds and time limits.
-  Leak sanitizer was disabled because this sandbox does not support its process checks.
-- PE32+ x64 Windows GUI binary; imports only Windows system DLLs.
-- Embedded 1.4 title and administrator manifest verified; icon and version resource
-  compiled from supplied app.ico and updated app.rc.
-- Source review of browser/app AND remote-range conditions, IPv4/IPv6 family
-  selection, transaction aborts, filter read-back and cleanup paths.
+PASSED IN GITHUB ACTIONS
+- Windows x64 MinGW-w64 C++17 build completed successfully with optimization,
+  static C++ runtime, and -Wall -Wextra -Wpedantic -Werror.
+- All 25 automatic/manual timing, randomized-range, cancellation and failure
+  scenarios passed before the Windows application was compiled.
+- The 1.5 Windows build includes advanced_main.cpp, the base modes, the native
+  Advanced mode UI, five saved presets, app-owned traffic inspection and WFP
+  conditions for executable identity, protocol, direction, ports and remote
+  IPv4/IPv6 address/CIDR matching.
+- app.rc compiled with the 1.5 title/version resource and administrator manifest.
+- The Windows executable was uploaded as a build artifact and published in the
+  v1.5.0 release.
 
-NOT EXECUTED HERE
-- Native Windows UI, hotkey, adapter disable/enable or WFP integration tests.
-- Actual Zoom or Google Meet call interruption, recovery, proxy/VPN behavior,
-  browser process identification under all configurations, or precise timing.
-- MSVC build helper and optional GitHub Actions workflow.
+NOT EXECUTED BY HOSTED CI
+- Interactive Windows UI/hotkey testing on a physical user desktop.
+- Runtime WFP install/remove behavior against a live third-party application.
+- Physical adapter disable/enable behavior on real Ethernet or Wi-Fi hardware.
+- Actual Zoom/Google Meet interruption behavior, VPN/proxy combinations, or
+  application-specific traffic patterns on every supported environment.
 
-The Test button performs API/filter checks on Windows. It does not measure live
-packet loss. A successful build and portable tests do not establish production
-readiness on a real Windows network. Validate in a test call before relying on it.
-The executable is unsigned. Meet mode blocks known media destinations and does
-not guarantee a service-side disconnect/kick.
+The in-app Test button performs the selected API/filter install-and-restore check
+on the machine where the app is running. The hosted build verifies compilation
+and portable tests; it does not claim that a particular live call will disconnect.

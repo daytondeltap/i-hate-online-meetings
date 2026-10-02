@@ -1,12 +1,15 @@
-ihatemeetings.exe is already compiled. Run it directly for normal use.
+ihatemeetings.exe is already compiled in the 1.5 release. Run it directly for normal use.
 
-Optional rebuild:
-Run COMPILE-WINDOWS.cmd with a Windows MinGW-w64 toolchain installed.
-source/Build-ihatemeetings.ps1 also contains the inherited MSVC build route; the
-included release was tested with MinGW-w64, not MSVC.
+Optional local rebuild:
+Run COMPILE-WINDOWS.cmd with a Windows MinGW-w64 toolchain installed, or use
+source/Build-ihatemeetings.ps1. The build helper compiles advanced_main.cpp so
+Advanced mode and the base modes are included in the same native executable.
 
 Cloud build:
-Upload this package's Windows and .github directories to a GitHub repository.
-Run the "Build ihatemeetings 1.4 Windows" Actions workflow. It builds with MinGW,
-runs the timing tests, and uploads ihatemeetings.exe and documentation.
-This workflow is included but was not submitted/executed in this environment.
+This repository includes the "Build and release ihatemeetings" GitHub Actions
+workflow. It runs the 25 timing tests, compiles the Windows x64 executable, builds
+and verifies the universal macOS app/DMG, packages source archives and publishes
+the versioned release when that release tag does not already exist.
+
+Version 1.5.0 has already been built and published. Installers are on the Releases
+page; rebuilding is only needed for development or later source changes.
