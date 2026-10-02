@@ -15,10 +15,27 @@ The Windows app is unsigned. The Mac app is ad-hoc signed, not notarized; if mac
 
 ## Features
 
-Native Windows and Mac network toggle utility, formerly NetToggle. Includes adapter/traffic modes, Zoom and Meet lag/hold modes, hotkeys, independent randomized OFF/ON ranges, and a compact native UI.
+I lit made this for one person lmao
 
-Windows Meet filtering combines browser identity with known media destinations. Mac Meet filtering covers those destinations for all apps on the selected adapter. A blocked call may remain joined. See the platform README files for exact scope and limitations. Live meeting behavior is not covered by build tests.
+Downloads:
+- **ihatemeetings.exe** — compiled Windows x64 application.
+- **ihatemeetings-1.4-macOS-universal.dmg** — macOS 12+ app for Intel and Apple Silicon. Open and drag the app to Applications.
+- **ihatemeetings-1.4-macOS-app.zip** — the same Mac app without a DMG.
+- **Windows-source.zip / macOS-source.zip / all-source.zip** — full source and build files.
+- **SHA256SUMS.txt** — checksums for all downloads.
 
-## For developers
+**How to Install the App:**
 
-[Source code and build instructions](SOURCES.md). These are optional and are not needed to install or run the app.
+If you're on windows: Install the Exe
+If you're on Mac: Install the DMG
+
+If it gets blocked (and you still want the app): 
+
+
+Windows: THIS IS NOT A VIRUS, you can check it. Anyways, for windows, if you see the blue screen protection window saying "Windows Blocked This App", press More Information > Run Anyway
+
+Mac: if it blocks it: System Settings → Privacy & Security → Open Anyway, you need to scroll to the bottom of the page though.
+
+This allows you to add fake lag to any type of app, but mainly meetings, mainly supports google meet and zoom. Make sure to choose the correct network adapter at the top of the app window, if already installed.
+
+
