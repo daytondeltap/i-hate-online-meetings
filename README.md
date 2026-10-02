@@ -20,7 +20,7 @@ I lit made this for one person lmao
 - Each preset can match application, TCP/UDP, direction, local port, remote IP/CIDR and remote port.
 - **Identify app traffic** shows active TCP/UDP connection/socket metadata owned by the selected app and can load a connection into the current preset.
 - Advanced filters use the same timing, random ranges, cycles and hotkey controls as the normal modes.
-- **UI spacing:** larger Windows/macOS windows and Advanced editors with extra room between controls; CI now checks the known layout gaps on every build.
+- **UI spacing:** the normal main-window dimensions stay unchanged; the Advanced/configuration windows are roomier, labels are re-spaced, and CI checks native control bounds and font extents on every build.
 
 Windows enforces the executable identity directly in Windows Filtering Platform rules. macOS discovers connections owned by the selected executable and creates exact connection rules for those endpoints. Encrypted payload contents are not decrypted or inspected.
 
