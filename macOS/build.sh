@@ -6,7 +6,7 @@ APP="$DIST/ihatemeetings.app"
 mkdir -p "$DIST"
 
 # Build from a generated source copy so the checked-in compact implementation can
-# keep its behavior while the release layout receives the expanded 1.5.1 geometry.
+# keep its behavior while the release layout receives the expanded 1.5.2 geometry.
 BUILD_SOURCE="$DIST/AdvancedMain.swift"
 perl source/prepare_layout.pl source/main_advanced.swift > "$BUILD_SOURCE"
 
@@ -19,7 +19,7 @@ rm -rf "$APP" "$DIST/ihatemeetings-arm64" "$DIST/ihatemeetings-x86_64"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 
 for arch in arm64 x86_64; do
-  xcrun swiftc -swift-version 5 -parse-as-library -O -whole-module-optimization -target "${arch}-apple-macos12.0" -framework AppKit -framework Carbon -framework Foundation "$BUILD_SOURCE" source/Timing.swift -o "$DIST/ihatemeetings-$arch"
+  xcrun swiftc -swift-version 5 -parse-as-library -O -whole-module-optimization -target "${arch}-apple-macos12.0" -framework AppKit -framework Carbon -framework Foundation "$BUILD_SOURCE" source/Timing.swift source/PacketScope.swift -o "$DIST/ihatemeetings-$arch"
 done
 lipo -create "$DIST/ihatemeetings-arm64" "$DIST/ihatemeetings-x86_64" -output "$APP/Contents/MacOS/ihatemeetings"
 cat > "$APP/Contents/Info.plist" <<'PLIST'
@@ -30,8 +30,8 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
 <key>CFBundleIdentifier</key><string>local.ihatemeetings.app</string>
 <key>CFBundleName</key><string>ihatemeetings</string>
 <key>CFBundleDisplayName</key><string>ihatemeetings</string>
-<key>CFBundleShortVersionString</key><string>1.5.1</string>
-<key>CFBundleVersion</key><string>1.5.1</string>
+<key>CFBundleShortVersionString</key><string>1.5.2</string>
+<key>CFBundleVersion</key><string>1.5.2</string>
 <key>CFBundlePackageType</key><string>APPL</string>
 <key>NSHighResolutionCapable</key><true/>
 <key>LSMinimumSystemVersion</key><string>12.0</string>
@@ -53,6 +53,6 @@ trap 'rm -rf "$STAGE"' EXIT
 cp -R "$APP" "$STAGE/"
 cp README.txt "$STAGE/READ-ME.txt"
 ln -s /Applications "$STAGE/Applications"
-hdiutil create -volname "ihatemeetings 1.5.1" -srcfolder "$STAGE" -ov -format UDZO "$DIST/ihatemeetings-1.5.1-macOS-universal.dmg"
-hdiutil verify "$DIST/ihatemeetings-1.5.1-macOS-universal.dmg"
-ditto -c -k --keepParent "$APP" "$DIST/ihatemeetings-1.5.1-macOS-app.zip"
+hdiutil create -volname "ihatemeetings 1.5.2" -srcfolder "$STAGE" -ov -format UDZO "$DIST/ihatemeetings-1.5.2-macOS-universal.dmg"
+hdiutil verify "$DIST/ihatemeetings-1.5.2-macOS-universal.dmg"
+ditto -c -k --keepParent "$APP" "$DIST/ihatemeetings-1.5.2-macOS-app.zip"

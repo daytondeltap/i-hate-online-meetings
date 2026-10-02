@@ -78,29 +78,16 @@ final class HotKeyManager {
     func register(index: Int, callback: @escaping () -> Void) -> Bool { if let hotKeyRef { UnregisterEventHotKey(hotKeyRef); self.hotKeyRef = nil }; self.callback = callback; let o:[(UInt32,UInt32)] = [(UInt32(kVK_F6),0),(UInt32(kVK_F6),UInt32(controlKey)),(UInt32(kVK_F6),UInt32(optionKey)),(UInt32(kVK_F6),UInt32(controlKey|optionKey)),(UInt32(kVK_F7),0)]; let c=o[max(0,min(index,o.count-1))]; var hk:EventHotKeyRef?; let id=EventHotKeyID(signature:signature,id:1); if RegisterEventHotKey(c.0,c.1,id,GetApplicationEventTarget(),0,&hk)==noErr { hotKeyRef=hk; return true }; return false }
 }
 
-struct Connection: Hashable {
-    let pid: Int; let process: String; let proto: String; let localHost: String; let localPort: Int; let remoteHost: String; let remotePort: Int
-    var label: String { "\(process) [\(pid)]  \(proto.uppercased())  \(localHost):\(localPort) → " + (remoteHost.isEmpty ? "remote not exposed" : "\(remoteHost):\(remotePort)") }
-}
 struct AdvancedPreset: Codable { var app = ""; var proto = 0; var direction = 0; var localPort = 0; var remote = ""; var remotePort = 0 }
-func hostPort(_ text: String) -> (String,Int)? {
-    if text.hasPrefix("[") { guard let close=text.firstIndex(of:"]") else{return nil}; let host=String(text[text.index(after:text.startIndex)..<close]); let after=text.index(after:close); guard after<text.endIndex,text[after]==":",let port=Int(text[text.index(after:after)...]),(1...65535).contains(port) else{return nil}; return(host,port) }
-    guard let colon=text.lastIndex(of:":") else{return nil}; let host=String(text[..<colon]); guard !host.isEmpty,host != "*",let port=Int(text[text.index(after:colon)...]),(1...65535).contains(port) else{return nil}; return(host,port)
-}
 func connections(for pids: Set<Int>) -> [Connection] {
-    var result=Set<Connection>()
-    for pid in pids { let r=shell("/usr/sbin/lsof",["-nP","-a","-p",String(pid),"-iTCP","-iUDP","-FpcPn"]); var proto="", process=""
-        for raw in r.stdout.split(separator:"\n",omittingEmptySubsequences:true){let line=String(raw);guard let tag=line.first else{continue};let value=String(line.dropFirst()); if tag=="c"{process=value;continue}; if tag=="f"{proto="";continue}; if tag=="P"{let p=value.lowercased();proto=(p=="tcp"||p=="udp") ? p:"";continue}; guard tag=="n",!proto.isEmpty else{continue}; if let arrow=value.range(of:"->"),let local=hostPort(String(value[..<arrow.lowerBound])),let remote=hostPort(String(value[arrow.upperBound...])){result.insert(Connection(pid:pid,process:process,proto:proto,localHost:local.0,localPort:local.1,remoteHost:remote.0,remotePort:remote.1))} else if let local=hostPort(value){result.insert(Connection(pid:pid,process:process,proto:proto,localHost:local.0,localPort:local.1,remoteHost:"",remotePort:0))}
-        }
-    }
-    return result.sorted{$0.label<$1.label}
+    guard !pids.isEmpty else { return [] }
+    // Inspect all socket owners so shared UDP bindings cannot be mistaken for one app.
+    let r = shell("/usr/sbin/lsof", ["-nP", "-iTCP", "-iUDP", "-FpcPn"])
+    guard r.status == 0 else { return [] }
+    return parseOwnedConnections(r.stdout, selected: pids)
 }
 func ipMatches(_ address: String, cidr: String) -> Bool {
-    if cidr.trimmingCharacters(in:.whitespacesAndNewlines).isEmpty { return true }
-    let parts=cidr.split(separator:"/",omittingEmptySubsequences:false); let base=String(parts[0]); let is6=base.contains(":"); if address.contains(":")  !=  is6 { return false }
-    let maxBits=is6 ? 128:32; let bits=parts.count==2 ? (Int(parts[1]) ?? -1):maxBits; if bits<0 || bits>maxBits{return false}
-    if is6 { var a=in6_addr(),b=in6_addr(); guard inet_pton(AF_INET6,address,&a)==1,inet_pton(AF_INET6,base,&b)==1 else{return false}; let aa=withUnsafeBytes(of:a){Array($0)},bb=withUnsafeBytes(of:b){Array($0)}; for i in 0..<16{let remaining=bits-i*8;if remaining<=0{break};let mask:UInt8=remaining>=8 ? 0xff : UInt8(0xff << (8-remaining));if (aa[i] & mask)  !=  (bb[i] & mask){return false}}; return true }
-    var a=in_addr(),b=in_addr(); guard inet_pton(AF_INET,address,&a)==1,inet_pton(AF_INET,base,&b)==1 else{return false}; let av=UInt32(bigEndian:a.s_addr),bv=UInt32(bigEndian:b.s_addr); let mask:UInt32=bits==0 ? 0 : (bits==32 ? 0xffffffff : 0xffffffff << (32-bits)); return (av&mask)==(bv&mask)
+    cidr.isEmpty || IPNetwork(cidr)?.contains(address) == true
 }
 
 final class NetworkEngine {
@@ -111,7 +98,15 @@ final class NetworkEngine {
     func pids(forExecutable path:String)->Set<Int>{var out=Set<Int>();for app in NSWorkspace.shared.runningApplications{if app.executableURL?.standardized.path.caseInsensitiveCompare(URL(fileURLWithPath:path).standardized.path)== .orderedSame{out.insert(Int(app.processIdentifier))}};return out}
     func zoomConnections()->[Connection]{connections(for:zoomPIDs())}
     func applyZoomBlock(interface:String)throws->Int{let c=zoomConnections().filter{!$0.remoteHost.isEmpty};guard !c.isEmpty else{try pf.clear();return 0};try applyExact(interface:interface,connections:c,direction:0);return c.count}
-    func applyExact(interface:String,connections:[Connection],direction:Int)throws{var rules="";for c in connections{let fam=(c.localHost.contains(":")||c.remoteHost.contains(":")) ? "inet6":"inet";if direction != 2{rules += "block drop quick on \(interface) \(fam) proto \(c.proto) from \(c.localHost) port = \(c.localPort) to \(c.remoteHost) port = \(c.remotePort)\n"};if direction != 1{rules += "block drop quick on \(interface) \(fam) proto \(c.proto) from \(c.remoteHost) port = \(c.remotePort) to \(c.localHost) port = \(c.localPort)\n"}};guard !rules.isEmpty else{throw failure("No matching rules were generated.")};try pf.apply(rules);for c in connections{try killStates(c.localHost,c.remoteHost)}}
+    func applyExact(interface:String,connections:[Connection],direction:Int)throws{var rules="";for c in connections{let fam=(c.localHost.contains(":")||c.remoteHost.contains(":")) ? "inet6":"inet";if direction != 2{rules += "block drop quick on \(interface) \(fam) proto \(c.proto) from \(c.localHost) port = \(c.localPort) to \(c.remoteHost) port = \(c.remotePort)\n"};if direction != 1{rules += "block drop quick on \(interface) \(fam) proto \(c.proto) from \(c.remoteHost) port = \(c.remotePort) to \(c.localHost) port = \(c.localPort)\n"}};guard !rules.isEmpty else{throw failure("No matching rules were generated.")};try pf.apply(rules);try killExactStates(connections)}
+    func killExactStates(_ connections: [Connection]) throws {
+        let states = shell("/sbin/pfctl", ["-ss", "-vv"])
+        guard states.status == 0 else { throw failure("Could not inspect PF states: " + states.stderr) }
+        for id in matchingStateIDs(states.stdout, connections: connections) {
+            let result = shell("/sbin/pfctl", ["-k", "id", "-k", id])
+            guard result.status == 0 else { throw failure("Could not clear the selected connection state: " + result.stderr) }
+        }
+    }
     func advancedConnections(_ preset:AdvancedPreset)->[Connection]{let pids=pids(forExecutable:preset.app);return connections(for:pids).filter{c in if c.remoteHost.isEmpty{return false};if preset.proto==1 && c.proto != "tcp"{return false};if preset.proto==2 && c.proto != "udp"{return false};if preset.localPort>0 && c.localPort  !=  preset.localPort{return false};if preset.remotePort>0 && c.remotePort  !=  preset.remotePort{return false};return ipMatches(c.remoteHost,cidr:preset.remote)}}
     func applyAdvanced(interface:String,preset:AdvancedPreset)throws->Int{guard !preset.app.isEmpty else{throw failure("Choose an application in Configure.")};guard FileManager.default.fileExists(atPath:preset.app) else{throw failure("Selected application executable was not found.")};let c=advancedConnections(preset);guard !c.isEmpty else{try pf.clear();return 0};try applyExact(interface:interface,connections:c,direction:preset.direction);return c.count}
     func interfaceAddresses(_ interface:String)->[String]{shell("/sbin/ifconfig",[interface]).stdout.split(separator:"\n").compactMap{let p=$0.split(whereSeparator:{$0.isWhitespace});guard p.count>1&&(p[0]=="inet"||p[0]=="inet6") else{return nil};return String(p[1])}}
@@ -179,7 +174,7 @@ final class AppDelegate:NSObject,NSApplicationDelegate,NSWindowDelegate {
         let flows=NSPopUpButton();add(flows,12,182,596);flowBox=flows;let note=NSTextField(wrappingLabelWithString:"Inspector shows active TCP/UDP connection metadata owned by the selected app. Unconnected UDP sockets do not expose a remote endpoint through lsof.");note.textColor = .secondaryLabelColor;add(note,12,116,596,54)
         let save=NSButton(title:"Save preset",target:self,action:#selector(editorSave));add(save,414,70,94,28);let close=NSButton(title:"Close",target:self,action:#selector(editorClose));add(close,514,70,94,28);loadEditorPreset();p.makeKeyAndOrderFront(nil)
     }
-    private func editorRead()->Bool{guard let af=appField,let proto=protoBox,let dir=directionBox,let lp=localPortField,let rf=remoteField,let rp=remotePortField else{return false};let l=lp.stringValue.isEmpty ? 0:Int(lp.stringValue) ?? -1,r=rp.stringValue.isEmpty ? 0:Int(rp.stringValue) ?? -1;guard (0...65535).contains(l),(0...65535).contains(r) else{showError("Ports must be 1–65535, or blank for any.");return false};presets[currentPreset]=AdvancedPreset(app:af.stringValue,proto:proto.indexOfSelectedItem,direction:dir.indexOfSelectedItem,localPort:l,remote:rf.stringValue.trimmingCharacters(in:.whitespacesAndNewlines),remotePort:r);return true}
+    private func editorRead()->Bool{guard let af=appField,let proto=protoBox,let dir=directionBox,let lp=localPortField,let rf=remoteField,let rp=remotePortField else{return false};let l=lp.stringValue.isEmpty ? 0:Int(lp.stringValue) ?? -1,r=rp.stringValue.isEmpty ? 0:Int(rp.stringValue) ?? -1;guard (0...65535).contains(l),(0...65535).contains(r) else{showError("Ports must be 1–65535, or blank for any.");return false};guard rf.stringValue.isEmpty || IPNetwork(rf.stringValue.trimmingCharacters(in:.whitespacesAndNewlines)) != nil else{showError("Remote must be a numeric IPv4/IPv6 address or CIDR.");return false};presets[currentPreset]=AdvancedPreset(app:af.stringValue,proto:proto.indexOfSelectedItem,direction:dir.indexOfSelectedItem,localPort:l,remote:rf.stringValue.trimmingCharacters(in:.whitespacesAndNewlines),remotePort:r);return true}
     private func loadEditorPreset(){guard let pb=presetBox,let af=appField,let proto=protoBox,let dir=directionBox,let lp=localPortField,let rf=remoteField,let rp=remotePortField else{return};pb.selectItem(at:currentPreset);let p=presets[currentPreset];af.stringValue=p.app;proto.selectItem(at:p.proto);dir.selectItem(at:p.direction);lp.stringValue=p.localPort==0 ? "":String(p.localPort);rf.stringValue=p.remote;rp.stringValue=p.remotePort==0 ? "":String(p.remotePort);flowBox?.removeAllItems();inspected=[]}
     @objc private func editorPresetChanged(){if editorRead(){savePreset(currentPreset)};currentPreset=max(0,min(4,presetBox?.indexOfSelectedItem ?? 0));loadEditorPreset();updateModeUI()}
     @objc private func editorBrowse(){let o=NSOpenPanel();o.canChooseFiles=true;o.canChooseDirectories=true;o.allowsMultipleSelection=false;o.prompt="Choose";if o.runModal()== .OK,let u=o.url{var path=u.standardized.path;if u.pathExtension.lowercased()=="app",let e=Bundle(url:u)?.executableURL{path=e.standardized.path};appField?.stringValue=path}}

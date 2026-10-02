@@ -1,4 +1,4 @@
-ihatemeetings.exe is already compiled in the 1.5.1 release. Run it directly for normal use.
+ihatemeetings.exe is already compiled in the 1.5.2 release. Run it directly for normal use.
 
 Optional local rebuild:
 Run COMPILE-WINDOWS.cmd with a Windows MinGW-w64 toolchain installed, or use
@@ -13,5 +13,5 @@ compiles the Windows x64 executable, builds and verifies the universal macOS
 app/DMG, packages source archives and publishes the versioned release when that
 release tag does not already exist.
 
-Version 1.5.1 has been built and published. Installers are on the Releases page;
+Version 1.5.2 has been built and published. Installers are on the Releases page;
 rebuilding is only needed for development or later source changes.

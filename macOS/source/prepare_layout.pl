@@ -9,7 +9,7 @@ sub replace_required {
     die "Required UI layout source fragment was not found: $from\n" unless $count;
 }
 
-replace_required('ihatemeetings 1.5', 'ihatemeetings 1.5.1');
+replace_required('ihatemeetings 1.5', 'ihatemeetings 1.5.2');
 
 # Main window: larger canvas with wider controls and larger row gaps.
 replace_required('width:390,height:382', 'width:520,height:500');

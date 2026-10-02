@@ -9,8 +9,8 @@ m = re.search(r"IDD_MAIN DIALOGEX 0,0,(\d+),(\d+)", rc)
 assert m, "main dialog dimensions not found"
 w, h = map(int, m.groups())
 assert w >= 360 and h >= 300, f"main dialog too small: {w}x{h}"
-assert 'CAPTION "ihatemeetings 1.5.1"' in rc
-assert 'FILEVERSION 1,5,1,0' in rc
+assert 'CAPTION "ihatemeetings 1.5.2"' in rc
+assert 'FILEVERSION 1,5,2,0' in rc
 
 required = [
     "wr.bottom-wr.top+48",

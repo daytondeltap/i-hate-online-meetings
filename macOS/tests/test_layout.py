@@ -64,5 +64,5 @@ editor_rows = [(96, 30), (156, 74), (250, 24), (298, 24), (346, 24), (394, 24), 
 for (y, h), (ny, nh) in zip(editor_rows, editor_rows[1:]):
     assert ny - (y + h) >= 12, f"editor vertical spacing regression: {y}+{h} -> {ny}"
 
-assert "ihatemeetings 1.5.1" in source
+assert "ihatemeetings 1.5.2" in source
 print("macOS UI layout checks passed")

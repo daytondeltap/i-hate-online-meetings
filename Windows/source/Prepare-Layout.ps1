@@ -15,7 +15,7 @@ function Replace-Required([string]$From, [string]$To) {
 }
 
 # Version/title patch for the generated build source.
-Replace-Required 'ihatemeetings 1.5' 'ihatemeetings 1.5.1'
+Replace-Required 'ihatemeetings 1.5' 'ihatemeetings 1.5.2'
 
 # Give the injected Advanced controls their own vertical band and add breathing room
 # above the original dialog controls.

@@ -1,23 +1,21 @@
-## ihatemeetings 1.5.1
+## Download and install
 
-Downloads are built automatically for Windows x64 and universal macOS 12+ (Intel + Apple Silicon).
+| Your computer | Download | How to install |
+| --- | --- | --- |
+| **Windows PC** | [**Download for Windows (.exe)**](https://github.com/daytondeltap/i-hate-online-meetings/releases/download/v1.5.2/01-Windows-ihatemeetings.exe) | Open the file and accept administrator permission. |
+| **Mac — Apple Silicon or Intel** | [**Download for Mac (.dmg)**](https://github.com/daytondeltap/i-hate-online-meetings/releases/download/v1.5.2/02-Mac-ihatemeetings.dmg) | Open the disk image and drag **ihatemeetings** into **Applications**. |
 
-### UI spacing patch
-- Expands the default Windows and macOS main windows so controls have more breathing room.
-- Reflows the Advanced packet-filter editors on both platforms with wider fields, larger row gaps, and larger traffic-inspector areas.
-- Keeps the same controls and behavior; this patch is focused on preventing UI overlap and clipped labels/inputs.
-- Adds automated layout regression checks to the GitHub Actions pipeline so future builds validate minimum window size and the known control spacing before compilation/release.
+## What's included
 
-### Advanced mode
-- Keeps the **Advanced mode** checkbox at the top of both native UIs.
-- Stores up to **five saved packet/flow presets**.
-- Presets match a specific application plus optional protocol, direction, local port, remote IP/CIDR and remote port.
-- **Identify app traffic** shows active TCP/UDP connection/socket metadata for the chosen app and can load it into a preset.
-- Advanced mode reuses the existing fixed/random timing, cycles, unlimited runs and hotkey controls.
+Version 1.5.2 tightens app-specific isolation on Mac: PF state removal now matches protocol and both complete endpoints, then removes only the matching state ID and creator ID. Shared UDP bindings with multiple owners are excluded. IPv4/IPv6 CIDR input validation is also stricter on both platforms. Five saved presets, the traffic inspector, timing modes and the expanded UI remain available.
 
-### Platform behavior
-- **Windows:** Advanced rules include the selected executable's WFP application identity, so another app using the same server/port is not included by that rule.
-- **macOS:** Advanced mode discovers connections owned by the selected executable and installs exact PF rules for those connection tuples. It refreshes the app-owned connection set during held blocks.
-- UDP socket tables may not expose a remote endpoint until the socket is connected. Encrypted payloads are not decrypted or inspected.
+The inspector displays app-owned TCP/UDP connection metadata, not individual packet payloads. Mac filtering uses observed connection tuples rather than kernel-enforced application identity, so socket reuse and discovery timing remain limitations. Windows rules include executable identity directly.
 
-Existing Fast, Adapter, Zoom and Meet modes remain available. The release pipeline runs timing tests, layout checks, compilation for both platforms, PF syntax validation, Mac signature verification, and DMG verification.
+## Optional downloads — developers and advanced users
+
+- [Source code and build instructions](https://github.com/daytondeltap/i-hate-online-meetings/blob/main/SOURCES.md)
+- [All source](https://github.com/daytondeltap/i-hate-online-meetings/releases/download/v1.5.2/90-Source-All-platforms.zip)
+- [Windows source](https://github.com/daytondeltap/i-hate-online-meetings/releases/download/v1.5.2/91-Source-Windows.zip)
+- [Mac source](https://github.com/daytondeltap/i-hate-online-meetings/releases/download/v1.5.2/92-Source-Mac.zip)
+- [Mac app ZIP](https://github.com/daytondeltap/i-hate-online-meetings/releases/download/v1.5.2/80-Mac-app-alternative.zip)
+- [SHA256 checksums](https://github.com/daytondeltap/i-hate-online-meetings/releases/download/v1.5.2/99-SHA256SUMS.txt)
