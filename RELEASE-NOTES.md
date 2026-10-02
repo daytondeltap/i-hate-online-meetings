@@ -1,16 +1,17 @@
-The app is now **ihatemeetings**. The repository remains **zoom-breaker**.
+## ihatemeetings 1.5
 
-Downloads:
-- **ihatemeetings.exe** — compiled Windows x64 application.
-- **ihatemeetings-1.4-macOS-universal.dmg** — macOS 12+ app for Intel and Apple Silicon. Open and drag the app to Applications.
-- **ihatemeetings-1.4-macOS-app.zip** — the same Mac app without a DMG.
-- **Windows-source.zip / macOS-source.zip / all-source.zip** — full source and build files.
-- **SHA256SUMS.txt** — checksums for all downloads.
+Downloads are built automatically for Windows x64 and universal macOS 12+ (Intel + Apple Silicon).
 
-Adds Meet Lag and Meet Disconnect/hold, independent randomized OFF/ON ranges, compact native controls and the app icon. Retains automatic cycles, unlimited runs, manual hotkey toggling, Zoom modes and adapter modes.
+### Advanced mode
+- Adds the requested **Advanced mode** checkbox at the top of both native UIs.
+- Stores up to **five saved packet/flow presets**.
+- Presets match a specific application plus optional protocol, direction, local port, remote IP/CIDR and remote port.
+- Adds **Identify app traffic** so active TCP/UDP connection/socket metadata for the chosen app can be inspected and loaded into a preset.
+- Advanced mode reuses the existing fixed/random timing, cycles, unlimited runs and hotkey controls.
 
-Build verification: Windows timing tests and compilation; Mac timing/rule tests, PF syntax validation without loading rules, universal compilation, ad-hoc signature checks and DMG verification. Live UI, network adapters, administrator launch and real Zoom/Meet calls have not been verified by these automated checks.
+### Platform behavior
+- **Windows:** Advanced rules include the selected executable's WFP application identity, so another app using the same server/port is not included by that rule.
+- **macOS:** Advanced mode discovers connections owned by the selected executable and installs exact PF rules for those connection tuples. It refreshes the app-owned connection set during held blocks.
+- UDP socket tables may not expose a remote endpoint until the socket is connected. Encrypted payloads are not decrypted or inspected.
 
-Meet blocking affects known media destinations and does not guarantee removal from a meeting. Windows scopes it to supported browsers; macOS scopes it to all apps on the selected adapter. Mac Zoom state refresh may affect other connections to the same remote address.
-
-Windows is unsigned. macOS is ad-hoc signed, not Apple-notarized; first launch may require System Settings → Privacy & Security → Open Anyway. Administrator permission is required.
+Existing Fast, Adapter, Zoom and Meet modes remain available. The release pipeline still runs timing tests, compiles the Windows app, compiles both Mac architectures, validates PF rule syntax, verifies the Mac bundle signature and verifies the DMG.
