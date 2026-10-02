@@ -1,0 +1,46 @@
+name: Organize release downloads
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/organize-release.yml']
+permissions:
+  contents: write
+jobs:
+  organize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Label and order v1.4.0 downloads
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: python
+        run: |
+          import hashlib, json, os, pathlib, subprocess, tempfile
+          repo = os.environ["GH_REPO"]
+          def gh(*args):
+              return subprocess.check_output(["gh", *args], text=True)
+          release = json.loads(gh("api", f"repos/{repo}/releases/tags/v1.4.0"))
+          names = {
+              "ihatemeetings.exe": ("01-Windows-ihatemeetings.exe", "01 — WINDOWS — Download app (.exe)"),
+              "ihatemeetings-1.4-macOS-universal.dmg": ("02-Mac-ihatemeetings.dmg", "02 — MAC — Download installer (.dmg) — Intel + Apple Silicon"),
+              "ihatemeetings-1.4-macOS-app.zip": ("80-Mac-app-alternative.zip", "80 — MAC — Alternative app ZIP"),
+              "ihatemeetings-1.4-all-source.zip": ("90-Source-All-platforms.zip", "90 — DEVELOPERS — All source code"),
+              "ihatemeetings-1.4-Windows-source.zip": ("91-Source-Windows.zip", "91 — DEVELOPERS — Windows source code"),
+              "ihatemeetings-1.4-macOS-source.zip": ("92-Source-Mac.zip", "92 — DEVELOPERS — Mac source code"),
+              "SHA256SUMS.txt": ("99-SHA256SUMS.txt", "99 — Optional download checksums"),
+          }
+          for asset in release["assets"]:
+              target = names.get(asset["name"])
+              if target:
+                  gh("api", "--method", "PATCH", f"repos/{repo}/releases/assets/{asset['id']}", "-f", "name="+target[0], "-f", "label="+target[1])
+          with tempfile.TemporaryDirectory() as tmp:
+              gh("release", "download", "v1.4.0", "--dir", tmp)
+              folder = pathlib.Path(tmp)
+              files = sorted(p for p in folder.iterdir() if p.name != "99-SHA256SUMS.txt")
+              hashes = "".join(hashlib.sha256(p.read_bytes()).hexdigest()+"  "+p.name+"\n" for p in files)
+              sums = folder/"99-SHA256SUMS.txt"
+              sums.write_text(hashes)
+              gh("release", "upload", "v1.4.0", str(sums)+"#99 — Optional download checksums", "--clobber")
+          gh("release", "edit", "v1.4.0", "--title", "ihatemeetings 1.4 — Download for Windows or Mac", "--notes-file", "docs/release-downloads.md")
