@@ -5,10 +5,10 @@ Open ihatemeetings.exe and accept the administrator prompt. No compiler, Python,
 Electron, .NET download, or separate runtime installation is required.
 
 UI SPACING
-Version 1.5.3 expands the main window and Advanced editor and increases spacing
-between the existing controls to prevent the overlap/clipping reported in 1.5.0.
-The release build also runs automated checks for the known layout gaps before
-compilation.
+Version 1.5.3 keeps the normal main-window dimensions unchanged. The Advanced
+configuration window is wider and its labels/fields are re-spaced to prevent the
+overlap/clipping reported in earlier builds. The release pipeline measures native
+control rectangles and font extents and renders UI previews before publishing.
 
 ADVANCED MODE
 Check Advanced mode at the top of the window, then choose Configure.
